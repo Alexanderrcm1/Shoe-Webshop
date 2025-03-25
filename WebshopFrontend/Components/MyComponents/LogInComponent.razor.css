@@ -8,6 +8,7 @@
 
 .login-form-container h1 {
     margin: 1rem 0 5rem 0;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .login-form {
@@ -65,12 +66,14 @@
 .logged-in {
     justify-self: center;
     margin: 10rem 0 5rem 0;
-    font-size: clamp(1rem, 5vw, 3rem)
+    font-size: clamp(1rem, 5vw, 3rem);
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .register-new {
     justify-self: center;
     font-size: clamp(1rem, 5vw, 3rem);
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .register-new:hover {

@@ -9,7 +9,7 @@
 		<h1>Register</h1>
 		@if (FailedRegister)
 		{
-			<h2>@Error</h2>
+			<h2>@_error</h2>
 		}
 		<EditForm Model="User" OnValidSubmit="RegisterUser" FormName="CreateUser">
 			<DataAnnotationsValidator />
@@ -44,10 +44,10 @@
 
 @code {
 
-	private UserDTO User { get; set; } = new UserDTO();
+	private UserDTO User { get; set; } = new();
 	private bool IsRegistered { get; set; } = false;
 	private bool FailedRegister { get; set; } = false;
-	private string? Error;
+	private string? _error;
 
 	public async Task RegisterUser()
 	{
@@ -60,7 +60,7 @@
 		else
 		{
 			FailedRegister = true;
-			Error = "User already exists.";
+			_error = "User already exists.";
 		}
 
 	}

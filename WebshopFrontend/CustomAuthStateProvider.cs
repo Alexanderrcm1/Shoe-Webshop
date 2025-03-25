@@ -67,10 +67,6 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
 		}
 		catch (Exception ex)
 		{

@@ -49,7 +49,7 @@
 </EditForm>
 
 @code {
-	[Parameter] public OrderDTO Order { get; set; } = new OrderDTO();
+	[Parameter] public OrderDTO Order { get; set; } = new();
 
 	[Parameter] public EventCallback ValidSubmit { get; set; }
 

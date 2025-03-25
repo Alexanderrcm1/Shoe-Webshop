@@ -73,7 +73,7 @@
 }
 
 @code {
-	private List<ShoeDTO>? Shoes { get; set; } = new List<ShoeDTO>();
+	private List<ShoeDTO>? Shoes { get; set; } = new();
 
 	private AuthenticationState? AuthState { get; set; }
 	private bool IsLoggedIn { get; set; } = false;

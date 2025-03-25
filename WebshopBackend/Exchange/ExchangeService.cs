@@ -31,9 +31,6 @@ public class ExchangeService : IExchangeService
 		{
 			throw new InvalidOperationException("Failed");
 		}
-		else
-		{
-			return response;
-		}
+		return response;
 	}
 }

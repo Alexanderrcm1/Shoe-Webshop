@@ -11,6 +11,7 @@
     display: flex;
     justify-content: center;
     margin-top: 5vh;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .form-outer {
@@ -47,6 +48,13 @@ legend {
 .submit-btn {
     width: clamp(5rem, 15vw, 20rem);
     padding: 0.5vw;
+    margin: 1vw;
+    color: white;
+    background-color: #03C03C;
+    border: none;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .cart-input.invalid {

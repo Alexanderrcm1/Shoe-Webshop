@@ -110,14 +110,7 @@ public static class EndpointExtensions
 		app.MapGet("/exchange", async (IExchangeService exchangeService) =>
 		{
 			var exchangeRate = await exchangeService.GetExchangeAsync();
-			if (exchangeRate != null)
-			{
-				return Results.Ok(exchangeRate);
-			}
-			else
-			{
-				return Results.NotFound();
-			}
+			return Results.Ok(exchangeRate);
 		});
 
 		return app;

@@ -45,8 +45,6 @@ public class CartService
 			Name = user,
 			CartItems = JsonSerializer.Serialize(Cart)
 		};
-		Console.WriteLine(userCart.CartItems);
-		var response = await client.PostAsJsonAsync("/cart", userCart);
-		Console.WriteLine(response);
+		await client.PostAsJsonAsync("/cart", userCart);
 	}
 }

@@ -67,7 +67,7 @@
 </div>
 
 @code {
-	[Parameter] public int id { get; set; }
+	[Parameter] public int Id { get; set; }
 
 	private ShoeDTO? _shoe;
 	private AuthenticationState? _authState;
@@ -80,7 +80,7 @@
 	private async Task FetchShoe()
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
-		_shoe = await client.GetFromJsonAsync<ShoeDTO>($"/shoes/{id}");
+		_shoe = await client.GetFromJsonAsync<ShoeDTO>($"/shoes/{Id}");
 	}
 
 	protected override async Task OnInitializedAsync()

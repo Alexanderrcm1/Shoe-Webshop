@@ -29,8 +29,6 @@ else
 
 @code {
 
-	[Parameter] public EventCallback LoginSuccess { get; set; }
-
 	private string Email { get; set; } = "";
 	private string Password { get; set; } = "";
 	private bool IsLoggedIn { get; set; } = false;
@@ -50,11 +48,7 @@ else
 		IsLoggedIn = AuthState?.User?.Identity?.IsAuthenticated ?? false;
 		FailedLogIn = true;
 
-		if (IsLoggedIn)
-		{
-			await LoginSuccess.InvokeAsync();
-		}
-		else
+		if (!IsLoggedIn)
 		{
 			FailedLogIn = true;
 		}

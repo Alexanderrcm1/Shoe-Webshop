@@ -1,7 +1,6 @@
 ﻿@page "/cart"
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using WebshopFrontend.Components.MyComponents
 @using WebshopLibrary;
 @using WebshopLibrary.DTOs
@@ -99,8 +98,8 @@
 
 	private decimal _total;
 
-	private OrderDTO _order = new OrderDTO();
-	private OrderDTO _latestOrder = new OrderDTO();
+	private OrderDTO _order = new();
+	private OrderDTO _latestOrder = new();
 
 	private AuthenticationState? _authState;
 	private bool _isLoggedIn;
@@ -228,10 +227,5 @@
 			_total = GetTotal(CartService.Cart);
 			StateHasChanged();
 		}
-	}
-
-	private void LoginSuccess()
-	{
-		Navigation.NavigateTo("/cart", forceLoad: true);
 	}
 }
