@@ -25,6 +25,15 @@ public class ExchangeService : IExchangeService
 		string url = $"{_apiKey}/latest/SEK/";
 		Console.WriteLine(url);
 
-		return await client.GetFromJsonAsync<ExchangeRateDTO>(url);
+		var response = await client.GetFromJsonAsync<ExchangeRateDTO>(url);
+
+		if (response is null)
+		{
+			throw new InvalidOperationException("Failed");
+		}
+		else
+		{
+			return response;
+		}
 	}
 }

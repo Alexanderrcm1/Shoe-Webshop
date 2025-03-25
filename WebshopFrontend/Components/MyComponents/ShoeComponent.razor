@@ -79,7 +79,7 @@
 	private bool IsLoggedIn { get; set; } = false;
 	private string User { get; set; } = "Guest";
 
-	private string Currency { get; set; }
+	private string? Currency { get; set; }
 	private decimal Rate { get; set; } = 1m;
 
 	private async Task AddShoeToCart(ShoeDTO shoe)
@@ -101,7 +101,7 @@
 		IsLoggedIn = await CheckRegisteredUser();
 		if (IsLoggedIn)
 		{
-			User = AuthState?.User?.Identity?.Name;
+			User = AuthState?.User?.Identity?.Name ?? "Guest";
 		}
 	}
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -122,8 +122,12 @@
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
 		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
+		if (response?.ConversionRates is null)
+		{
+			Console.WriteLine("No rates available");
+			return;
+		}
 		var rates = response.ConversionRates;
-		Console.WriteLine(rates);
 		Rate = rates[currency];
 		Currency = currency;
 	}

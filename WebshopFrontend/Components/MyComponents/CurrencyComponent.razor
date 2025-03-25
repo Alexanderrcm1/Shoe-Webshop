@@ -9,11 +9,6 @@
 @code {
 	[Parameter] public EventCallback<string> CurrencyChanged { get; set; }
 
-	// private async Task SelectCurrency(string currency) 
-	// {
-	// 	await CurrencyChanged.InvokeAsync(currency);
-	// }
-
 	private async Task SelectCurrency(string currency)
 	{
 		await LocalStorage.SetItemAsync("currency", currency);

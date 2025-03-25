@@ -167,14 +167,33 @@
 
     a:hover {
         cursor: pointer;
-        font-size: clamp(2.1rem, 20.1vw, 2.1rem);
     }
 
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1024px) {
     .cart-item img {
-        max-width: 200px;
+        max-width: 150px;
+        height: 150px;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .cart-item-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cart-item-header {
+        font-size: clamp(0.5rem, 5vw, 1rem);
+        margin: 0;
+        margin-left: 1rem;
+    }
+
+    .cart-item-info {
+        display: flex;
+        flex-direction: column;
+        font-size: clamp(0.5rem, 3vw, 1rem);
     }
 }
 

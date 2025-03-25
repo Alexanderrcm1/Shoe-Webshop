@@ -1,7 +1,6 @@
 ﻿@page "/orders/{id:int}"
 @using System.Text.Json
 @using WebshopFrontend.Components.MyComponents
-@using WebshopLibrary;
 @using WebshopLibrary.DTOs
 @rendermode InteractiveServer
 @inject IHttpClientFactory HttpClientFactory
@@ -13,15 +12,11 @@
 	<div class="currency-container">
 		<CurrencyComponent CurrencyChanged="Exchange"/>
 	</div>
-	@if (order != null)
+	@if (_order != null)
 	{
 		<main class="order-main">
-@* 			<div class="img-container">
-				<img src="Sneakz.png">
-			</div> *@
 			<div class="header-container">
-				<h1>Thanks for your order, @order.FirstName!</h1>
-@* 				<h2>Order Id: @order.Id</h2> *@
+				<h1>Thanks for your order, @_order.FirstName!</h1>
 			</div>
 			<div class="items-container">
 				<table>
@@ -87,11 +82,11 @@
 			</div>
 			<div class="delivery-container">
 				<h2>Delivery Address:</h2>
-				<p>@order.FirstName @order.LastName</p>
-				<p>@order.Street</p>
-				<p>@order.Postcode @order.City @order.Country</p>
-				<p>Phone: @order.Phone</p>
-				<p>Email: @order.Email</p>
+				<p>@_order.FirstName @_order.LastName</p>
+				<p>@_order.Street</p>
+				<p>@_order.Postcode @_order.City @_order.Country</p>
+				<p>Phone: @_order.Phone</p>
+				<p>Email: @_order.Email</p>
 			</div>
 		</main>
 	}
@@ -101,9 +96,9 @@
 {
 	[Parameter] public int Id { get; set; }
 
-	private OrderDTO? order;
+	private OrderDTO? _order;
 	private List<ShoeDTO> _shoes = new();
-	private decimal _total = 0;
+	private decimal _total;
 
 	private string? _currency;
 	private decimal _rate = 1m;
@@ -129,13 +124,21 @@
 	private async Task FetchOrder()
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
-		order = await client.GetFromJsonAsync<OrderDTO>($"/orders/{Id}");
+		_order = await client.GetFromJsonAsync<OrderDTO>($"/orders/{Id}");
 	}
 
 	private List<ShoeDTO> GetShoes()
 	{
-		string json = order.CartItems;
-		return JsonSerializer.Deserialize<List<ShoeDTO>>(json);
+		string? json = _order?.CartItems;
+
+		if (json is null)
+		{
+			throw new InvalidOperationException("Failed");
+		}
+		else
+		{
+			return JsonSerializer.Deserialize<List<ShoeDTO>>(json) ?? new List<ShoeDTO>();
+		}
 	}
 
 	protected override async Task OnInitializedAsync()
@@ -157,7 +160,7 @@
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
 		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
-		var rates = response.ConversionRates;
+		var rates = response?.ConversionRates;
 
 		if (rates != null)
 		{

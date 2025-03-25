@@ -51,7 +51,7 @@
 
 	public async Task RegisterUser()
 	{
-		var response = await AuthStateProvider.RegisterAsync(User.Email, User.Password);
+		var response = await AuthStateProvider.RegisterAsync(User.Email ?? "", User.Password ?? "");
 
 		if (response)
 		{

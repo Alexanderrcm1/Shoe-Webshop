@@ -1,6 +1,4 @@
-﻿@using WebshopFrontend.Components.Pages
-@using WebshopLibrary;
-@using WebshopLibrary.DTOs
+﻿@using WebshopLibrary.DTOs
 <EditForm Model="Order" OnValidSubmit="ValidSubmit" FormName="CreateOrder">
 	<DataAnnotationsValidator/>
 	<ValidationSummary/>
@@ -51,7 +49,7 @@
 </EditForm>
 
 @code {
-	[Parameter] public OrderDTO? Order { get; set; }
+	[Parameter] public OrderDTO Order { get; set; } = new OrderDTO();
 
 	[Parameter] public EventCallback ValidSubmit { get; set; }
 

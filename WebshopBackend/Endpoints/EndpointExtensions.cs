@@ -118,7 +118,6 @@ public static class EndpointExtensions
 			{
 				return Results.NotFound();
 			}
-			//return exchangeRate is not null ? Results.Ok(exchangeRate) : Results.NotFound();
 		});
 
 		return app;

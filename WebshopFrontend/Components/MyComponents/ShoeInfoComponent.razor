@@ -51,7 +51,7 @@
 		_isLoggedIn = await CheckRegisteredUser();
 		if (_isLoggedIn)
 		{
-			_user = _authState?.User?.Identity?.Name;
+			_user = _authState?.User?.Identity?.Name ?? "Guest";
 		}
 	}
 
@@ -72,7 +72,7 @@
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
 		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
-		var rates = response.ConversionRates;
+		var rates = response?.ConversionRates;
 
 		if (rates != null)
 		{

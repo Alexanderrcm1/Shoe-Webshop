@@ -56,8 +56,8 @@ namespace WebshopBackend
 			app.MapGroup("/Account").MapIdentityApi<User>();
 			app.MapGroup("/Account").MapGet("/AuthenticatedUser",
 				async Task<IResult> (ClaimsPrincipal user, WebshopContext context) =>
-				{
-					string userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+				{	
+					var userId = user?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 					if (string.IsNullOrEmpty(userId))
 					{
 						return TypedResults.BadRequest("User ID claim is missing");

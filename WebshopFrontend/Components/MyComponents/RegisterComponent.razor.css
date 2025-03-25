@@ -1,30 +1,17 @@
-﻿.register-input {
-    margin-bottom: 0.5rem;
-    padding: 0.3rem;
-    width: clamp(10rem, 13vw, 20rem);
-    background-color: red !important;
-}
-
-.register-input.invalid {
-    border: 1px solid #D2122E;
-    outline: 1px solid #D2122E;
-}
-
-.register-form-container {
+﻿.register-form-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .register-form-container h1 {
     margin: 1rem 0 5rem 0;
-    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .register-form-container h2 {
     margin: 1rem 0 1rem 0;
-    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 2rem;
 }
 
@@ -37,12 +24,6 @@
     border-radius: 10px;
     justify-content: center;
     align-items: center;
-}
-
-.input {
-    margin-bottom: 0.5rem;
-    padding: 10rem;
-    width: clamp(10rem, 10vw, 20rem);
 }
 
 .register-form label {
@@ -84,7 +65,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: clamp(1rem, 5vw, 3rem);
 }
 

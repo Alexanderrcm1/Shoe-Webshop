@@ -19,7 +19,7 @@
 	<div class="currency-container">
 		<CurrencyComponent CurrencyChanged="Exchange"/>
 	</div>
-	@if (CartService.Cart.Any() && CartService.Cart != null)
+	@if (CartService.Cart.Any())
 	{
 		<div class="cart-container">
 			@if (_total != 0)
@@ -79,12 +79,11 @@
 		<div class="form-container">
 			@if (_isLoggedIn)
 			{
-				<OrderFormComponent Order="order" ValidSubmit="HandleValidSubmit"/>
+				<OrderFormComponent Order="_order" ValidSubmit="HandleValidSubmit" />
 			}
 			else
 			{
 				<h1 class="log-in"1><a class="log-in-a"href="/login">Log in</a> to complete order</h1>
-@* 				<LogInComponent LoginSuccess="LoginSuccess"/> *@
 			}
 		</div>
 	}
@@ -98,28 +97,28 @@
 </div>
 @code {
 
-	private decimal _total = 0;
+	private decimal _total;
 
-	private OrderDTO order = new OrderDTO();
-	private OrderDTO latestOrder = new OrderDTO();
+	private OrderDTO _order = new OrderDTO();
+	private OrderDTO _latestOrder = new OrderDTO();
 
 	private AuthenticationState? _authState;
-	private bool _isLoggedIn = false;
+	private bool _isLoggedIn;
 	private string _userName = "Guest";
 
 
-	private string? _currency;
+	private string _currency = "";
 	private decimal _rate = 1m;
 
 
 	private async void HandleValidSubmit()
 	{
 		Console.WriteLine("Form submitted.");
-		order.CartItems = JsonSerializer.Serialize(CartService.Cart);
-		await AddOrder(order);
+		_order.CartItems = JsonSerializer.Serialize(CartService.Cart);
+		await AddOrder(_order);
 		await GetOrder();
 		await RemoveCart();
-		Navigation.NavigateTo($"/orders/{latestOrder.Id}");
+		Navigation.NavigateTo($"/orders/{_latestOrder.Id}");
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -130,8 +129,8 @@
 
 		if (_isLoggedIn)
 		{
-			_userName = _authState?.User?.Identity?.Name;
-			order.Email = _userName;
+			_userName = _authState?.User?.Identity?.Name ?? "Guest";
+			_order.Email = _userName;
 		}
 		_currency = await LocalStorage.GetItemAsync<string>("currency") ?? "SEK";
 		await Exchange(_currency);
@@ -163,7 +162,7 @@
 	private async Task GetOrder()
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
-		latestOrder = await client.GetFromJsonAsync<OrderDTO>("/orders/latest");
+		_latestOrder = await client.GetFromJsonAsync<OrderDTO>("/orders/latest") ?? new OrderDTO();
 	}
 
 	private async Task GetCart()
@@ -172,15 +171,15 @@
 		var userCart = await client.GetFromJsonAsync<CartDTO>($"/cart/{_userName}");
 		var guestCart = await client.GetFromJsonAsync<CartDTO>($"/cart/Guest");
 		Console.WriteLine(guestCart);
-		if (userCart != null)
+		if (userCart?.CartItems != null)
 		{
-			CartService.Cart = JsonSerializer.Deserialize<List<ShoeDTO>>(userCart.CartItems);
+			CartService.Cart = JsonSerializer.Deserialize<List<ShoeDTO>>(userCart.CartItems) ?? new List<ShoeDTO>();
 		}
 		else
 		{
-			if (guestCart != null)
+			if (guestCart?.CartItems != null)
 			{
-				CartService.Cart = JsonSerializer.Deserialize<List<ShoeDTO>>(guestCart.CartItems);
+				CartService.Cart = JsonSerializer.Deserialize<List<ShoeDTO>>(guestCart.CartItems) ?? new List<ShoeDTO>();
 				await CartService.UpdateCart(_userName, client);
 				await client.DeleteAsync($"/cart/delete/Guest");
 			}
@@ -220,7 +219,7 @@
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
 		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
-		var rates = response.ConversionRates;
+		var rates = response?.ConversionRates;
 
 		if (rates != null)
 		{

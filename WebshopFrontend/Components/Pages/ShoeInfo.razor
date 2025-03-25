@@ -14,26 +14,26 @@
 	<div class="currency-container">
 		<CurrencyComponent CurrencyChanged="Exchange"/>
 	</div>
-	@if (shoe != null)
+	@if (_shoe != null)
 	{
-		var price = Math.Round(shoe.Price * _rate, 2);
+		var price = Math.Round(_shoe.Price * _rate, 2);
 		var salePrice = Math.Round(price * 0.7m * _rate, 2);
-		if (shoe.OnSale)
+		if (_shoe.OnSale)
 		{
 			<div class="img-div">
-				<img src=@shoe.ImgUrl>
+				<img src=@_shoe.ImgUrl>
 			</div>
 			<div class="text-div">
-				<h1>@shoe.Brand</h1>
-				<h2>@shoe.Name</h2>
-				<p>In Store: @shoe.Quantity</p>
-				<p>Color: @shoe.Color</p>
-				<p>Size: @shoe.Size</p>
+				<h1>@_shoe.Brand</h1>
+				<h2>@_shoe.Name</h2>
+				<p>In Store: @_shoe.Quantity</p>
+				<p>Color: @_shoe.Color</p>
+				<p>Size: @_shoe.Size</p>
 				<p class="old-price">@price @_currency</p>
 				<h2 class="sale-price">@salePrice @_currency</h2>
-				@if (shoe.Quantity > 0)
+				@if (_shoe.Quantity > 0)
 				{
-					<button class="add-shoe-btn" @onclick="() => AddShoeToCart(shoe)">Push to cart</button>
+					<button class="add-shoe-btn" @onclick="() => AddShoeToCart(_shoe)">Push to cart</button>
 				}
 				else
 				{
@@ -44,18 +44,18 @@
 		else
 		{
 			<div class="img-div">
-				<img src=@shoe.ImgUrl>
+				<img src=@_shoe.ImgUrl>
 			</div>
 			<div class="text-div">
-				<h1>@shoe.Brand</h1>
-				<h2>@shoe.Name</h2>
-				<p>In Store: @shoe.Quantity</p>
-				<p>Color: @shoe.Color</p>
-				<p>Size: @shoe.Size</p>
+				<h1>@_shoe.Brand</h1>
+				<h2>@_shoe.Name</h2>
+				<p>In Store: @_shoe.Quantity</p>
+				<p>Color: @_shoe.Color</p>
+				<p>Size: @_shoe.Size</p>
 				<p>@price @_currency</p>
-				@if (shoe.Quantity > 0)
+				@if (_shoe.Quantity > 0)
 				{
-					<button class="add-shoe-btn" @onclick="() => AddShoeToCart(shoe)">Push to cart</button>
+					<button class="add-shoe-btn" @onclick="() => AddShoeToCart(_shoe)">Push to cart</button>
 				}
 				else
 				{
@@ -69,9 +69,9 @@
 @code {
 	[Parameter] public int id { get; set; }
 
-	private ShoeDTO? shoe;
+	private ShoeDTO? _shoe;
 	private AuthenticationState? _authState;
-	private bool _isLoggedIn = false;
+	private bool _isLoggedIn;
 	private string _user = "Guest";
 
 	private string? _currency;
@@ -80,7 +80,7 @@
 	private async Task FetchShoe()
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
-		shoe = await client.GetFromJsonAsync<ShoeDTO>($"/shoes/{id}");
+		_shoe = await client.GetFromJsonAsync<ShoeDTO>($"/shoes/{id}");
 	}
 
 	protected override async Task OnInitializedAsync()
@@ -89,7 +89,7 @@
 		_isLoggedIn = await CheckRegisteredUser();
 		if (_isLoggedIn)
 		{
-			_user = _authState?.User?.Identity?.Name;
+			_user = _authState?.User?.Identity?.Name ?? "Guest";
 		}
 	}
 
@@ -118,7 +118,7 @@
 	{
 		using var client = HttpClientFactory.CreateClient("MyApi");
 		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
-		var rates = response.ConversionRates;
+		var rates = response?.ConversionRates;
 
 		if (rates != null)
 		{
