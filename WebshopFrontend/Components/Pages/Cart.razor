@@ -1,0 +1,238 @@
+﻿@page "/cart"
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WebshopFrontend.Components.MyComponents
+@using WebshopLibrary;
+@using WebshopLibrary.DTOs
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject CustomAuthStateProvider AuthStateProvider
+@inject CartService CartService
+
+
+<PageTitle>Cart</PageTitle>
+
+<div class="page">
+	<div class="currency-container">
+		<CurrencyComponent CurrencyChanged="Exchange"/>
+	</div>
+	@if (CartService.Cart.Any() && CartService.Cart != null)
+	{
+		<div class="cart-container">
+			@if (_total != 0)
+			{
+				<div class="amount-div">
+					<h2 class="total-price">Total Amount: @_total @_currency</h2>
+				</div>
+			}
+			@foreach (var group in CartService.Cart.GroupBy(s => s.ModelId))
+			{
+				var s = group.First();
+				var quantity = group.Count();
+				var price = Math.Round(s.Price * _rate, 2);
+				var salePrice = Math.Round(price * 0.7m, 2);
+
+				if (s.OnSale)
+				{
+					<div class="cart-item" id="cart-item-{@s.Id}">
+						<img src="@s.ImgUrl">
+						<p class="remove-item" @onclick="() => RemoveItem(s)">X</p>
+						<div class="cart-item-text">
+							<div class="cart-item-header">
+								<h1>@s.Brand</h1>
+								<h1>@s.Name</h1>
+							</div>
+							<div class="cart-item-info">
+								<p>Color: @s.Color</p>
+								<p>Size: @s.Size</p>
+								<p class="quantity-p">Quantity: @quantity</p>
+								<p class="old-price">@price @_currency</p>
+								<p class="sale-price">@salePrice @_currency</p>
+							</div>
+						</div>
+					</div>
+				}
+				else
+				{
+					<div class="cart-item" id="cart-item-{@s.Id}">
+						<img src="@s.ImgUrl">
+						<p class="remove-item" @onclick="() => RemoveItem(s)">X</p>
+						<div class="cart-item-text">
+							<div class="cart-item-header">
+								<h1>@s.Brand</h1>
+								<h1>@s.Name</h1>
+							</div>
+							<div class="cart-item-info">
+								<p>Color: @s.Color</p>
+								<p>Size: @s.Size</p>
+								<p class="quantity-p">Quantity: @quantity</p>
+								<p>@price @_currency</p>
+							</div>
+						</div>
+					</div>
+				}
+			}
+		</div>
+		<div class="form-container">
+			@if (_isLoggedIn)
+			{
+				<OrderFormComponent Order="order" ValidSubmit="HandleValidSubmit"/>
+			}
+			else
+			{
+				<h1 class="log-in"1><a class="log-in-a"href="/login">Log in</a> to complete order</h1>
+@* 				<LogInComponent LoginSuccess="LoginSuccess"/> *@
+			}
+		</div>
+	}
+	else
+	{
+		<div class="empty-container">
+			<p>Cart Empty... </p>
+			<a href="/shoes">Browse Shoes</a>
+		</div>
+	}
+</div>
+@code {
+
+	private decimal _total = 0;
+
+	private OrderDTO order = new OrderDTO();
+	private OrderDTO latestOrder = new OrderDTO();
+
+	private AuthenticationState? _authState;
+	private bool _isLoggedIn = false;
+	private string _userName = "Guest";
+
+
+	private string? _currency;
+	private decimal _rate = 1m;
+
+
+	private async void HandleValidSubmit()
+	{
+		Console.WriteLine("Form submitted.");
+		order.CartItems = JsonSerializer.Serialize(CartService.Cart);
+		await AddOrder(order);
+		await GetOrder();
+		await RemoveCart();
+		Navigation.NavigateTo($"/orders/{latestOrder.Id}");
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender) return;
+
+		_isLoggedIn = await CheckRegisteredUser();
+
+		if (_isLoggedIn)
+		{
+			_userName = _authState?.User?.Identity?.Name;
+			order.Email = _userName;
+		}
+		_currency = await LocalStorage.GetItemAsync<string>("currency") ?? "SEK";
+		await Exchange(_currency);
+		await GetCart();
+		StateHasChanged();
+	}
+
+	public async Task RemoveCart()
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		await CartService.RemoveCart(_userName, client);
+	}
+
+	private async void RemoveItem(ShoeDTO shoe)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		await CartService.RemoveItem(_userName, shoe, client);
+		_total = GetTotal(CartService.Cart);
+		StateHasChanged();
+	}
+
+	private async Task AddOrder(OrderDTO order)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		await client.PostAsJsonAsync("/orders", order);
+		Console.WriteLine($"{order} Added");
+	}
+
+	private async Task GetOrder()
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		latestOrder = await client.GetFromJsonAsync<OrderDTO>("/orders/latest");
+	}
+
+	private async Task GetCart()
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		var userCart = await client.GetFromJsonAsync<CartDTO>($"/cart/{_userName}");
+		var guestCart = await client.GetFromJsonAsync<CartDTO>($"/cart/Guest");
+		Console.WriteLine(guestCart);
+		if (userCart != null)
+		{
+			CartService.Cart = JsonSerializer.Deserialize<List<ShoeDTO>>(userCart.CartItems);
+		}
+		else
+		{
+			if (guestCart != null)
+			{
+				CartService.Cart = JsonSerializer.Deserialize<List<ShoeDTO>>(guestCart.CartItems);
+				await CartService.UpdateCart(_userName, client);
+				await client.DeleteAsync($"/cart/delete/Guest");
+			}
+			else
+			{
+				CartService.Cart = new List<ShoeDTO>();
+			}
+		}
+		_total = GetTotal(CartService.Cart);
+	}
+
+	private decimal GetTotal(List<ShoeDTO> cart)
+	{
+		decimal total = 0;
+		foreach (var s in cart)
+		{
+			if (s.OnSale)
+			{
+				total += Math.Round(s.Price * 0.7m * _rate, 2);
+			}
+			else
+			{
+				total += Math.Round(s.Price * _rate, 2);
+			}
+		}
+
+		return total;
+	}
+
+	private async Task<bool> CheckRegisteredUser()
+	{
+		_authState = await AuthStateProvider.GetAuthenticationStateAsync();
+		return _authState?.User?.Identity?.IsAuthenticated ?? false;
+	}
+
+	public async Task Exchange(string currency)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
+		var rates = response.ConversionRates;
+
+		if (rates != null)
+		{
+			_rate = rates[currency];
+			_currency = currency;
+			_total = GetTotal(CartService.Cart);
+			StateHasChanged();
+		}
+	}
+
+	private void LoginSuccess()
+	{
+		Navigation.NavigateTo("/cart", forceLoad: true);
+	}
+}

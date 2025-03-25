@@ -1,0 +1,19 @@
+.page {
+    display: grid;
+    grid-template-rows: 2fr 15fr 1fr;
+    height: 100vh;
+    background-color: #FFFFFF;
+}
+
+.body-container {
+}
+
+footer {
+    background-color: #2b2b2d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Kanit", sans-serif;
+    color: white;
+    font-size: 1rem;
+}

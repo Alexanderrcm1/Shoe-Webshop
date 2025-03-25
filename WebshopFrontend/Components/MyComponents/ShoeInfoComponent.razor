@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using WebshopLibrary
+@using WebshopLibrary.DTOs
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CustomAuthStateProvider AuthStateProvider
+@inject IHttpClientFactory HttpClientFactory
+@inject CartService CartService
+@if (shoe != null)
+{
+	var price = Math.Round(shoe.Price * _rate, 2);
+	<div class="img-div">
+		<img src=@shoe.ImgUrl>
+	</div>
+	<div class="text-div">
+		<h1>@shoe.Brand</h1>
+		<h2>@shoe.Name</h2>
+		<p>In Store: @shoe.Quantity</p>
+		<p>Color: @shoe.Color</p>
+		<p>Size: @shoe.Size</p>
+		<p>@price @_currency</p>
+		@if (shoe.Quantity > 0)
+		{
+			<button class="add-shoe-btn" @onclick="() => AddShoeToCart(shoe)">Push to cart</button>
+		}
+		else
+		{
+			<button class="sold-out-btn">Sold Out</button>
+		}
+	</div>
+}
+@code {
+	[Parameter] public int id { get; set; }
+
+	private ShoeDTO? shoe;
+	private AuthenticationState? _authState;
+	private bool _isLoggedIn = false;
+	private string _user = "Guest";
+
+	private string _currency = "SEK";
+	private decimal _rate = 1m;
+
+	private async Task FetchShoe()
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		shoe = await client.GetFromJsonAsync<ShoeDTO>($"/shoes/{id}");
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await FetchShoe();
+		_isLoggedIn = await CheckRegisteredUser();
+		if (_isLoggedIn)
+		{
+			_user = _authState?.User?.Identity?.Name;
+		}
+	}
+
+	private async Task AddShoeToCart(ShoeDTO shoe)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		await CartService.AddShoeToCart(_user, shoe, client);
+		await FetchShoe();
+	}
+
+	private async Task<bool> CheckRegisteredUser()
+	{
+		_authState = await AuthStateProvider.GetAuthenticationStateAsync();
+		return _authState?.User?.Identity?.IsAuthenticated ?? false;
+	}
+
+	public async Task Exchange(string currency)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
+		var rates = response.ConversionRates;
+
+		if (rates != null)
+		{
+			_rate = rates[currency];
+			_currency = currency;
+			StateHasChanged();
+		}
+	}
+}

@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Fjalla+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Oswald:wght@200..700&family=Pacifico&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+
+/* CART FORM STYLING*/
+.form-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+}
+
+.form-outer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 1vw;
+}
+
+.form-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.cart-input {
+    width: clamp(8rem, 20vw, 15rem);
+    padding: 0.5vw;
+    margin: 0.5vw;
+}
+
+legend {
+    justify-self: center;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-btn {
+    width: clamp(5rem, 15vw, 20rem);
+    padding: 0.5vw;
+}
+
+.cart-input.invalid {
+    border: 1px solid #D2122E;
+    outline: 1px solid #D2122E;
+}
+
+.validation-message {
+    color: #D2122E;
+    font-size: clamp(0.8rem, 0.7vw, 2rem);
+}
+
+/*REGISTER FORM STYLING*/
+.register-input {
+    margin-bottom: 0.5rem;
+    padding: 0.3rem;
+    width: clamp(10rem, 13vw, 20rem);
+}
+
+.register-input.invalid {
+    border: 1px solid #D2122E;
+    outline: 1px solid #D2122E;
+}
+
+
+/**/
+
+.currency-container {
+    position: absolute;
+    top: 1vw;
+    right: 1vw;
+    z-index: 1000;
+}
+
+#sek-btn {
+    background: url("https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Flag_of_Sweden.svg/1200px-Flag_of_Sweden.svg.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat
+}
+
+#usd-btn {
+    background: url("https://cdn.britannica.com/79/4479-050-6EF87027/flag-Stars-and-Stripes-May-1-1795.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat
+}
+
+#gbp-btn {
+    background: url("https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.exchange-btn {
+    border-radius: 4px;
+    width: clamp(2rem, 2vw, 10rem);
+    height: 1rem;
+    cursor: pointer;
+}
+
+.old-price {
+    color: grey;
+    position: relative;
+    text-decoration: line-through;
+}
+
+.sale-price {
+    color: #D2122E;
+}

@@ -1,0 +1,24 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<div class="country-div">
+	<button class="exchange-btn" id="usd-btn" @onclick='async () => await SelectCurrency("USD")'></button>
+	<button class="exchange-btn" id="gbp-btn" @onclick='async () => await SelectCurrency("GBP")'></button>
+	<button class="exchange-btn" id="sek-btn" @onclick='async () => await SelectCurrency("SEK")'></button>
+</div>
+
+@code {
+	[Parameter] public EventCallback<string> CurrencyChanged { get; set; }
+
+	// private async Task SelectCurrency(string currency) 
+	// {
+	// 	await CurrencyChanged.InvokeAsync(currency);
+	// }
+
+	private async Task SelectCurrency(string currency)
+	{
+		await LocalStorage.SetItemAsync("currency", currency);
+		await CurrencyChanged.InvokeAsync(currency);
+	}
+
+}
+	

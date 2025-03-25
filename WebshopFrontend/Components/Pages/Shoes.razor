@@ -1,0 +1,15 @@
+﻿@page "/shoes"
+@using Microsoft.AspNetCore.Components.Authorization
+@using WebshopFrontend.Components.MyComponents
+@using WebshopLibrary
+@using WebshopLibrary.DTOs
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthenticationStateProvider AuthStateProvider
+@inject CartService CartService
+@rendermode InteractiveServer
+
+<PageTitle>Shoes</PageTitle>
+
+<div class="inventory">
+	<ShoeComponent />
+</div>

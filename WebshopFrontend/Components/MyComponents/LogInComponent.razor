@@ -1,0 +1,63 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CustomAuthStateProvider AuthStateProvider
+
+@if (IsLoggedIn)
+{
+	<h1 class="logged-in">Logged in as @AuthState?.User.Identity?.Name</h1>
+	<h2 class="register-new"><a href="/register">Register new account</a></h2>
+}
+else
+{
+	<div class="login-form-container">
+		<h1>Log In</h1>
+		<div class="login-form">
+			<label for="email">Email</label>
+			<input type="email" id="email" name="email" @bind="Email" />
+			<label for="password">Password</label>
+			<input type="password" id="password" name="password" @bind="Password" />
+			<button class="log-in-btn" @onclick="SignIn">Log in</button>
+		</div>
+		<div class="login-@(FailedLogIn ? "fail" : "success")">
+			<p>Login Failed. Try Again.</p>
+		</div>
+		<div class="create-account-link">
+			<p>Not a member? <a href="/register">Create Account!</a></p>
+		</div>
+	</div>
+}
+
+@code {
+
+	[Parameter] public EventCallback LoginSuccess { get; set; }
+
+	private string Email { get; set; } = "";
+	private string Password { get; set; } = "";
+	private bool IsLoggedIn { get; set; } = false;
+	private bool FailedLogIn { get; set; } = false;
+	private AuthenticationState? AuthState { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		AuthState = await AuthStateProvider.GetAuthenticationStateAsync();
+		IsLoggedIn = AuthState?.User?.Identity?.IsAuthenticated ?? false;
+	}
+
+	private async Task SignIn()
+	{
+		await AuthStateProvider.LogInAsync(Email, Password);
+		AuthState = await AuthStateProvider.GetAuthenticationStateAsync();
+		IsLoggedIn = AuthState?.User?.Identity?.IsAuthenticated ?? false;
+		FailedLogIn = true;
+
+		if (IsLoggedIn)
+		{
+			await LoginSuccess.InvokeAsync();
+		}
+		else
+		{
+			FailedLogIn = true;
+		}
+	}
+
+}

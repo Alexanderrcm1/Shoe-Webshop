@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using WebshopLibrary.DTOs
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CustomAuthStateProvider AuthStateProvider
+
+<div class="register-form-container">
+	@if (IsRegistered == false)
+	{
+		<h1>Register</h1>
+		@if (FailedRegister)
+		{
+			<h2>@Error</h2>
+		}
+		<EditForm Model="User" OnValidSubmit="RegisterUser" FormName="CreateUser">
+			<DataAnnotationsValidator />
+			<div class="register-form">
+				<ValidationSummary />
+				<div class="register-email-container">
+					<label for="email">Email</label>
+					<InputText type="email" id="email" @bind-Value="User.Email" class="register-input" />
+					<label for="confirm-email">Confirm Email</label>
+					<InputText type="email" id="confirm-email" @bind-Value="User.ConfirmEmail" class="register-input" />
+				</div>
+				<div class="register-password-container">
+					<label for="password">Password</label>
+					<InputText type="password" id="password" @bind-Value="User.Password" class="register-input" />
+					<label for="confirm-password">Confirm Password</label>
+					<InputText type="password" id="confirm-password" @bind-Value="User.ConfirmPassword" class="register-input" />
+				</div>
+				<div class="register-btn-container">
+					<button class="register-btn">Register</button>
+				</div>
+			</div>
+		</EditForm>
+	}
+	else
+	{
+		<div class="register-success">
+			<h2>@User.Email<br />You are now Registered</h2>
+			<h2><a href="/login">Log In</a></h2>
+		</div>
+	}
+</div>
+
+@code {
+
+	private UserDTO User { get; set; } = new UserDTO();
+	private bool IsRegistered { get; set; } = false;
+	private bool FailedRegister { get; set; } = false;
+	private string? Error;
+
+	public async Task RegisterUser()
+	{
+		var response = await AuthStateProvider.RegisterAsync(User.Email, User.Password);
+
+		if (response)
+		{
+			IsRegistered = true;
+		}
+		else
+		{
+			FailedRegister = true;
+			Error = "User already exists.";
+		}
+
+	}
+
+}

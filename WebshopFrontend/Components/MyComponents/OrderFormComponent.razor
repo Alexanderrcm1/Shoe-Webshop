@@ -1,0 +1,58 @@
+﻿@using WebshopFrontend.Components.Pages
+@using WebshopLibrary;
+@using WebshopLibrary.DTOs
+<EditForm Model="Order" OnValidSubmit="ValidSubmit" FormName="CreateOrder">
+	<DataAnnotationsValidator/>
+	<ValidationSummary/>
+	<div class="form-outer">
+		<div class="form-inner">
+			<label for="firstName">First Name</label>
+			<InputText id="firstName" @bind-Value="Order.FirstName" class="cart-input"/>
+		</div>
+		<div class="form-inner">
+			<label for="lastName">Last Name</label>
+			<InputText id="lastName" @bind-Value="Order.LastName" class="cart-input"/>
+		</div>
+	</div>
+	<div class="form-outer">
+		<div class="form-inner">
+			<label for="email">Email</label>
+			<InputText id="email" @bind-Value="Order.Email" class="cart-input"/>
+		</div>
+		<div class="form-inner">
+			<label for="phone">Phone</label>
+			<InputText id="phone" @bind-Value="Order.Phone" class="cart-input"/>
+		</div>
+	</div>
+	<legend>Address</legend>
+	<div class="form-outer">
+		<div class="form-inner">
+			<label for="street">Street</label>
+			<InputText id="street" @bind-Value="Order.Street" class="cart-input"/>
+		</div>
+		<div class="form-inner">
+			<label for="postcode">Postcode</label>
+			<InputText id="postcode" @bind-Value="Order.Postcode" class="cart-input"/>
+		</div>
+	</div>
+	<div class="form-outer">
+		<div class="form-inner">
+			<label for="country">Country</label>
+			<InputText id="country" @bind-Value="Order.Country" class="cart-input"/>
+		</div>
+		<div class="form-inner">
+			<label for="city">City</label>
+			<InputText id="city" @bind-value="Order.City" class="cart-input"/>
+		</div>
+	</div>
+	<div class="btn-container">
+		<button type="submit" class="submit-btn">Submit</button>
+	</div>
+</EditForm>
+
+@code {
+	[Parameter] public OrderDTO? Order { get; set; }
+
+	[Parameter] public EventCallback ValidSubmit { get; set; }
+
+}

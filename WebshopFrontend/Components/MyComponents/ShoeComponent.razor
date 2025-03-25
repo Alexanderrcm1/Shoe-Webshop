@@ -1,0 +1,130 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using WebshopLibrary
+@using WebshopLibrary.DTOs
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CustomAuthStateProvider AuthStateProvider
+@inject IHttpClientFactory HttpClientFactory
+@inject CartService CartService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<div class="currency-container">
+	<CurrencyComponent CurrencyChanged="Exchange" />
+</div>
+@if (Shoes != null)
+{
+	@foreach (var s in Shoes)
+	{
+		decimal price = 0;
+		if (Rate == 1)
+		{
+			price = Math.Round(s.Price * Rate, 0);
+		}
+		else
+		{
+			price = Math.Round(s.Price * Rate, 2);
+		}
+		var salePrice = Math.Round(price * 0.7m, 2);
+		if (s.OnSale)
+		{
+			<div class="item" id="item-@s.Id">
+				<div class="sale-container">
+					<p>ON SALE</p>
+				</div>
+				<a href="/ShoeInfo/@s.Id">
+					<img src="@s.ImgUrl"/>
+					<p>@s.Brand @s.Name</p>
+					<div class="info">
+						<p>Size: @s.Size</p>
+						<p class="sale-price">@salePrice @Currency</p>
+					</div>
+				</a>
+				@if (s.Quantity > 0)
+				{
+					<button @onclick="() => AddShoeToCart(s)" class="add-shoe-btn">Add to cart</button>
+				}
+				else
+				{
+					<button class="sold-out-btn">Sold Out</button>
+				}
+			</div>
+		}
+		else
+		{
+			<div class="item" id="item-@s.Id">
+				<a href="/ShoeInfo/@s.Id">
+					<img src="@s.ImgUrl"/>
+					<p>@s.Brand @s.Name</p>
+					<div class="info">
+						<p>Size: @s.Size</p>
+						<p>@price @Currency</p>
+					</div>
+				</a>
+				@if (s.Quantity > 0)
+				{
+					<button @onclick="() => AddShoeToCart(s)" class="add-shoe-btn">Push to cart</button>
+				}
+				else
+				{
+					<button class="sold-out-btn">Sold Out</button>
+				}
+			</div>
+		}
+	}
+}
+
+@code {
+	private List<ShoeDTO>? Shoes { get; set; } = new List<ShoeDTO>();
+
+	private AuthenticationState? AuthState { get; set; }
+	private bool IsLoggedIn { get; set; } = false;
+	private string User { get; set; } = "Guest";
+
+	private string Currency { get; set; }
+	private decimal Rate { get; set; } = 1m;
+
+	private async Task AddShoeToCart(ShoeDTO shoe)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		await CartService.AddShoeToCart(User, shoe, client);
+		await FetchShoes();
+	}
+
+	private async Task FetchShoes()
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		Shoes = await client.GetFromJsonAsync<List<ShoeDTO>>("/shoes");
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await FetchShoes();
+		IsLoggedIn = await CheckRegisteredUser();
+		if (IsLoggedIn)
+		{
+			User = AuthState?.User?.Identity?.Name;
+		}
+	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender) return;
+		Currency = await LocalStorage.GetItemAsync<string>("currency") ?? "SEK";
+		await Exchange(Currency);
+		StateHasChanged();
+	}
+
+	private async Task<bool> CheckRegisteredUser()
+	{
+		AuthState = await AuthStateProvider.GetAuthenticationStateAsync();
+		return AuthState?.User?.Identity?.IsAuthenticated ?? false;
+	}
+
+	public async Task Exchange(string currency)
+	{
+		using var client = HttpClientFactory.CreateClient("MyApi");
+		var response = await client.GetFromJsonAsync<ExchangeRateDTO>("/exchange");
+		var rates = response.ConversionRates;
+		Console.WriteLine(rates);
+		Rate = rates[currency];
+		Currency = currency;
+	}
+}

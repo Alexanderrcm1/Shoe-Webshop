@@ -1,0 +1,85 @@
+﻿.item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    text-align: center;
+    margin-top: 1.5rem;
+    position: relative;
+}
+
+.item:hover {
+    cursor: pointer;
+}
+
+img {
+    width: clamp(10rem, 10vw, 100rem);
+}
+
+p {
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(1.6rem, 1.3vw, 2rem);
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
+.info p {
+    font-size: clamp(1rem, 0.8vw, 1.2rem);
+}
+
+.add-shoe-btn {
+    background-color: #32de84;
+    border: none;
+    margin: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 10px;
+    font-family: 'Kanit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+.sold-out-btn {
+    background-color: #A9A9A9;
+    border: none;
+    margin: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 10px;
+    font-family: 'Kanit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+.add-shoe-btn:hover {
+    padding: 0.65rem;
+    cursor: pointer;
+}
+
+.sale-container {
+    width: clamp(10rem, 10vw, 100rem);
+    background-color: #D2122E;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+}
+
+/*@media screen and (min-width: 670px) {
+    p {
+        font-size: clamp(1.8rem, 1.8vw, 2rem);
+    }
+
+    .info p {
+        font-size: 1rem;
+    }
+}*/

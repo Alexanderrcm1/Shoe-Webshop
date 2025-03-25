@@ -1,0 +1,97 @@
+﻿.register-input {
+    margin-bottom: 0.5rem;
+    padding: 0.3rem;
+    width: clamp(10rem, 13vw, 20rem);
+    background-color: red !important;
+}
+
+.register-input.invalid {
+    border: 1px solid #D2122E;
+    outline: 1px solid #D2122E;
+}
+
+.register-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-form-container h1 {
+    margin: 1rem 0 5rem 0;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.register-form-container h2 {
+    margin: 1rem 0 1rem 0;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 2rem;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: clamp(3rem, 5vw, 10rem);
+    background-color: #2b2b2d;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.input {
+    margin-bottom: 0.5rem;
+    padding: 10rem;
+    width: clamp(10rem, 10vw, 20rem);
+}
+
+.register-form label {
+    color: white;
+    margin-bottom: 1px;
+}
+
+
+.register-email-container, .register-password-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.register-btn {
+    width: 8rem;
+    height: 2rem;
+    background-color: #67e9ee;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.register-btn:hover {
+    cursor: pointer;
+    width: 8.2rem;
+    height: 2.1rem;
+}
+
+.register-success {
+    display: flex;
+    justify-self: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(1rem, 5vw, 3rem);
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    cursor: pointer;
+}

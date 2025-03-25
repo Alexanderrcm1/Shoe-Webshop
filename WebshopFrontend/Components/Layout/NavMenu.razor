@@ -1,0 +1,49 @@
+﻿@rendermode InteractiveServer
+
+<div class="sidebar @(_isSidebarOpen ? "open" : "")">
+	<i class="close-btn" @onclick="CloseNav">&times;</i>
+	<div class="sidebar-logo-container">
+		<img src="Sneakz.png" alt="Sneakz logo" class="sidebar-logo">
+	</div>
+	<div class="sidebar-links-container">
+		<a href="/" class="sidebar-link" @onclick="CloseNav">Home</a>
+		<a href="/shoes" class="sidebar-link" @onclick="CloseNav">Shoes</a>
+		<a href="/login" class="sidebar-link" @onclick="CloseNav">Log In</a>
+	</div>
+</div>
+
+<header class="header-container">
+	<div class="small-screen-navbar">
+		<button class="open-btn" @onclick="OpenNav">&#9776;</button>
+		<a href="#" class="small-logo-a">
+			<img src="Sneakz.png" alt="Sneakz logo" class="small-logo-img">
+		</a>
+		<a href="/cart" class="small-cart">&#x1F6D2;</a>
+	</div>
+	<div class="big-screen-navbar">
+		<a href="/" class="nav-link">Home</a>
+		<a href="/shoes" class="nav-link">Shoes</a>
+		<a href="#" class="big-logo-a">
+			<img src="Sneakz.png" alt="Sneakz logo" class="big-logo-img">
+		</a>
+		<a href="/login" class="nav-link">Log In</a>
+		<a href="/cart" class="big-cart">&#x1F6D2;</a>
+	</div>
+</header>
+
+@code {
+
+	private bool _isSidebarOpen = false;
+
+	private void OpenNav()
+	{
+		_isSidebarOpen = true;
+		StateHasChanged();
+	}
+
+	private void CloseNav()
+	{
+		_isSidebarOpen = false;
+	}
+
+}

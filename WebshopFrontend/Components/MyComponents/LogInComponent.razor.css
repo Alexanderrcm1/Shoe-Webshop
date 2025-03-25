@@ -1,0 +1,85 @@
+﻿.login-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form-container h1 {
+    margin: 1rem 0 5rem 0;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: clamp(3rem, 5vw, 10rem);
+    background-color: #2b2b2d;
+    border-radius: 10px;
+}
+
+.login-form input {
+    margin-bottom: 0.5rem;
+    padding: 0.3rem;
+    width: clamp(10rem, 13vw, 20rem);
+}
+
+.login-form label {
+    color: white;
+    margin-bottom: 1px;
+}
+
+.login-form button {
+    width: 6rem;
+    height: 2rem;
+    justify-self: center;
+    align-self: center;
+    background-color: #03C03C;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.login-form button:hover {
+    cursor: pointer;
+    width: 6.2rem;
+    height: 2.1rem;
+}
+
+.create-account-link {
+    margin: 0.5rem;
+}
+
+.login-fail {
+    display: block;
+    color: red;
+}
+
+.login-success {
+    display: none;
+}
+
+.logged-in {
+    justify-self: center;
+    margin: 10rem 0 5rem 0;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(1rem, 5vw, 3rem)
+}
+
+.register-new {
+    justify-self: center;
+    font-family: 'Kanit', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: clamp(1rem, 5vw, 3rem);
+}
+
+.register-new:hover {
+    cursor: pointer;
+    font-size: clamp(1.1rem, 5.1vw, 3.1rem);
+}
+
+a {
+    text-decoration: none;
+}
